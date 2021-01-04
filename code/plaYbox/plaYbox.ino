@@ -1,12 +1,13 @@
 /*
  * Name          : plaYbox.ino
  * @author       : Roberto D'Amico (@bobboteck)
- * Last modified : 27.12.2020
- * Revision      : 1.0.0
+ * Last modified : 2021.01.04
+ * Revision      : 1.1.0
  *
  * Modification History:
  * Date         Version     Modified By		Description
- * 2020-12-22	1.0.0		Roberto D'Amico	
+ * 2021-01-04   1.1.0       Roberto D'Amico added a control to turn off the LEDs after 30 seconds of inactivity
+ * 2020-12-22   1.0.0       Roberto D'Amico First play mode
  * 
  * LICENSE GNU Affero General Public License v3.0
  * 
@@ -40,46 +41,54 @@
 #define BUTTON_GREEN    A3
 
 long randNumber;
+unsigned long lastActionTime;
 uint8_t leds[5] = { LED_WHITE, LED_BLUE, LED_YELLOW, LED_RED, LED_GREEN };
 uint8_t buttons[5] = { BUTTON_WHITE, BUTTON_BLUE, BUTTON_YELLOW, BUTTON_RED, BUTTON_GREEN };
 
 void setup()
 {
     pinMode(LED_BUILTIN, OUTPUT);
-    //Leds configuration
+    // Leds configuration
     pinMode(LED_WHITE, OUTPUT);
     pinMode(LED_BLUE, OUTPUT);
     pinMode(LED_YELLOW, OUTPUT);
     pinMode(LED_RED, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
-    //Buttons configuration
+    // Buttons configuration
     pinMode(BUTTON_WHITE, INPUT);
     pinMode(BUTTON_BLUE, INPUT);
     pinMode(BUTTON_YELLOW, INPUT);
     pinMode(BUTTON_RED, INPUT);
     pinMode(BUTTON_GREEN, INPUT);
 
+    // Initialize the randomizer
     randomSeed(analogRead(5));
-
+    // Generate the first random number and power on the relative led
     randNumber = random(50) % 5;
     digitalWrite(leds[randNumber], HIGH);
+    // Set the last action time to manage the auto power off of leds
+    lastActionTime = millis();
 }
 
 void loop()
 {
-    /*randNumber = random(50) % 5;
-
-    digitalWrite(leds[randNumber], HIGH);
-    delay(300);
-    digitalWrite(leds[randNumber], LOW);
-    delay(300);*/
-
+    // Check if the button with led on is pressed
     if (digitalRead(buttons[randNumber]) == HIGH)
     {
+        // Power off the led
         digitalWrite(leds[randNumber], LOW);
-
+        // Generate a new random number from 0 to 4
         randNumber = random(50) % 5;
-
+        // Power on the new led
         digitalWrite(leds[randNumber], HIGH);
+        // Update the last action variable
+        lastActionTime = millis();
+    }
+
+    // Check if no action for more than 30 seconds
+    if(millis() - lastActionTime >= 30000)
+    {
+        // Power off the led currently on
+        digitalWrite(leds[randNumber], LOW);
     }
 }

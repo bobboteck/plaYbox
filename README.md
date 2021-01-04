@@ -5,6 +5,8 @@ I had this idea, when casually surfing the internet I came across these big butt
 
 The project has just started, and is evolving, ideas come to mind along the way, so keep following it if you want to be updated ...
 
+More information on how to build it, is available on my website at the link [http://bobboteck.github.io/projects/playbox](http://bobboteck.github.io/projects/playbox).
+
 ![plaYbox](media/plaYbox.png)
 
 In this video you can see the first test of buttons and leds.
